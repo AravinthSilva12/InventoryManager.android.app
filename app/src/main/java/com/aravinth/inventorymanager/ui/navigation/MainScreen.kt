@@ -9,6 +9,7 @@ import androidx.navigation.compose.rememberNavController
 import com.aravinth.inventorymanager.ui.screen.BillingScreen
 import com.aravinth.inventorymanager.ui.screen.CrmScreen
 import com.aravinth.inventorymanager.ui.screen.HomeScreen
+import com.aravinth.inventorymanager.ui.screen.SplashScreen
 import com.aravinth.inventorymanager.ui.screen.StockScreen
 import com.aravinth.inventorymanager.ui.screen.SupplierScreen
 
@@ -17,9 +18,10 @@ fun MainScreen(){
     val navController = rememberNavController()
 Scaffold( bottomBar = { BottomNavigationBar(navController) } ) { innerPadding ->
     NavHost(navController = navController,
-            startDestination = Screen.Home.route,
+            startDestination = Screen.Splash.route,
             modifier = Modifier.padding(innerPadding)
            ) {
+        composable(Screen.Splash.route) { SplashScreen(navController) }
         composable(Screen.Home.route ) { HomeScreen() }
         composable(Screen.Stock.route) { StockScreen() }
         composable(Screen.Billing.route) { BillingScreen() }
