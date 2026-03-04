@@ -1,4 +1,6 @@
 package com.aravinth.inventorymanager.ui.navigation
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.List
@@ -7,10 +9,14 @@ import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarDefaults
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 
@@ -21,7 +27,7 @@ data class BottomNavItem(
 )
 
 @Composable
-fun BottomNavigationBar(navController: NavController){
+fun BottomNavigationBar(navController: NavController, modifier: Modifier = Modifier, tonalElevation: Dp = 6.dp){
     val items = listOf(
         BottomNavItem(Screen.Home, Icons.Default.Home, "Home"),
         BottomNavItem(Screen.Stock, Icons.Default.List, "Stock"),
@@ -32,7 +38,9 @@ fun BottomNavigationBar(navController: NavController){
 
     val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
 
-    NavigationBar{
+    NavigationBar(modifier = Modifier.navigationBarsPadding().padding(bottom = 8.dp),
+                  tonalElevation = tonalElevation,
+                  windowInsets = NavigationBarDefaults.windowInsets) {
         items.forEach{ item ->
             NavigationBarItem(
                 selected = currentRoute == item.screen.route,

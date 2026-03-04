@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!-- Main App Theme -->
     <style name="Theme.InventoryManager" parent="android:Theme.Material.Light.NoActionBar" />
+
+    <!-- Android System Splash Theme -->
+    <style name="Theme.InventoryManager.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@android:color/white</item>
+        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
+        <item name="postSplashScreenTheme">@style/Theme.InventoryManager</item>
+    </style>
+
 </resources>
