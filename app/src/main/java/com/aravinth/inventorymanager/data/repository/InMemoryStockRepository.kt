@@ -4,16 +4,16 @@ import com.aravinth.inventorymanager.domain.repository.StockRepository
 
 class InMemoryStockRepository: StockRepository {
     private val items = mutableListOf<StockItem>()
+    private var nextId = 1
     // Add stock item :
     override fun addStockItem(item: StockItem){
         items.add(item)
+        item.id = nextId++
     }
-
     // Get all stock items :
     override fun getAllStockItems(): List<StockItem> {
         return items
     }
-
     // Get stock item by id :
     override fun getStockItemById(id: Int): StockItem? {
         return items.find { it.id == id }
