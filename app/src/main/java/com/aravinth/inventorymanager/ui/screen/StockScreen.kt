@@ -13,10 +13,21 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.aravinth.inventorymanager.data.repository.InMemoryStockRepository
 import com.aravinth.inventorymanager.domain.usecase.StockUseCase
+import com.aravinth.inventorymanager.domain.model.StockItem
 
 @Composable
 fun StockScreen(){
     val repository = InMemoryStockRepository()
+    // Temporary test data
+    repository.addStockItem(
+        StockItem(1, "Mouse", 200.0, 350.0, 2, 5, null)
+    )
+    repository.addStockItem(
+        StockItem(2, "Keyboard", 400.0, 600.0, 10, 3, null)
+    )
+    repository.addStockItem(
+        StockItem(3, "Monitor", 5000.0, 6500.0, 1, 2, null)
+    )
     val useCase = StockUseCase(repository)
 
     val allItems = useCase.getAllStockItems()
