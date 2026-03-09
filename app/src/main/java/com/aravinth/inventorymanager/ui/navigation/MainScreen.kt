@@ -13,6 +13,7 @@ import com.aravinth.inventorymanager.ui.screen.CrmScreen
 import com.aravinth.inventorymanager.ui.screen.HomeScreen
 import com.aravinth.inventorymanager.ui.screen.StockScreen
 import com.aravinth.inventorymanager.ui.screen.SupplierScreen
+import com.aravinth.inventorymanager.ui.screen.AddStockScreen
 
 @Composable
 fun MainScreen(){
@@ -23,7 +24,8 @@ Scaffold(  contentWindowInsets = WindowInsets.safeDrawing, bottomBar = { BottomN
             modifier = Modifier.padding(innerPadding)
            ) {
         composable(Screen.Home.route ) { HomeScreen() }
-        composable(Screen.Stock.route) { StockScreen() }
+        composable(Screen.Stock.route) { StockScreen(navController) }
+        composable(Screen.AddStock.route) { AddStockScreen(navController) }
         composable(Screen.Billing.route) { BillingScreen() }
         composable(Screen.Suppliers.route) { SupplierScreen() }
         composable(Screen.CRM.route) { CrmScreen() }
