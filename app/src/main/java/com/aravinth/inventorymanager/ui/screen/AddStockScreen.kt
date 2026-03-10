@@ -2,6 +2,7 @@ package com.aravinth.inventorymanager.ui.screen
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
@@ -21,9 +22,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.aravinth.inventorymanager.domain.model.StockItem
 import com.aravinth.inventorymanager.viewmodel.StockViewModel
-import androidx.compose.foundation.text.input.InputTransformation.Companion.keyboardOptions
-import android.R.attr.value
-import androidx.compose.foundation.layout.height
 
 @Composable
 fun AddStockScreen(navController: NavController) {
@@ -52,12 +50,25 @@ fun AddStockScreen(navController: NavController) {
         OutlinedTextField(value = reorderLevel, onValueChange = {reorderLevel = it}, label = {Text("Re-Order level")},
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number))
         Spacer(modifier = Modifier.height(24.dp))
-        Button(onClick = {val item = StockItem(id = 0,
+        Button(onClick = {
+                        if(name.isBlank() ||
+                            purchasePrice.isBlank() ||
+                            sellingPrice.isBlank() ||
+                            quantity.isBlank() ||
+                            reorderLevel.isBlank()){
+                            return@Button
+                        }
+            val purchase = purchasePrice.toDoubleOrNull() ?: return@Button
+            val selling = sellingPrice.toDoubleOrNull() ?: return@Button
+            val quant = quantity.toIntOrNull() ?: return@Button
+            val reOrder = reorderLevel.toIntOrNull() ?: return@Button
+
+            val item = StockItem(id = 0,
                                                name = name,
-                                               purchasePrice = purchasePrice.toDouble(),
-                                               sellingPrice = sellingPrice.toDouble(),
-                                               quantity = quantity.toInt(),
-                                               reorderLevel = reorderLevel.toInt(),
+                                               purchasePrice = purchase,
+                                               sellingPrice = selling,
+                                               quantity = quant,
+                                               reorderLevel = reOrder,
                                                supplierId = null
                                                )
                                 viewModel.addStockItem(item)
