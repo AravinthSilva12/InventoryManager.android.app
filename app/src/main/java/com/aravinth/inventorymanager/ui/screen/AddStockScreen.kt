@@ -62,15 +62,14 @@ fun AddStockScreen(navController: NavController) {
             val selling = sellingPrice.toDoubleOrNull() ?: return@Button
             val quant = quantity.toIntOrNull() ?: return@Button
             val reOrder = reorderLevel.toIntOrNull() ?: return@Button
-
             val item = StockItem(id = 0,
-                                               name = name,
-                                               purchasePrice = purchase,
-                                               sellingPrice = selling,
-                                               quantity = quant,
-                                               reorderLevel = reOrder,
-                                               supplierId = null
-                                               )
+                                 name = name,
+                                 purchasePrice = purchase,
+                                 sellingPrice = selling,
+                                 quantity = quant,
+                                 reorderLevel = reOrder,
+                                 supplierId = null
+                                 )
                                 viewModel.addStockItem(item)
                                 navController.popBackStack()
                           }){

@@ -1,38 +1,59 @@
 package com.aravinth.inventorymanager.viewmodel
+import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import com.aravinth.inventorymanager.data.repository.InMemoryStockRepository
 import com.aravinth.inventorymanager.domain.model.StockItem
 import com.aravinth.inventorymanager.domain.usecase.StockUseCase
 
 class StockViewModel: ViewModel() {
-   private val repository = InMemoryStockRepository()
+
+   // dependencies :
+
+   companion object {private val repository = InMemoryStockRepository()}
    private val useCase = StockUseCase(repository)
 
-   fun getAllStockItems(): List<StockItem> {
-        return useCase.getAllStockItems()
+   // UI state
+   private val _items = mutableStateListOf<StockItem>()
+   val items: List<StockItem> = _items
+
+   // Initialization :
+   init {
+       loadItems()
    }
 
-   fun getLowStockItems(): List<StockItem> {
-        return useCase.getLowStockItems()
-   }
+   // Internal functions :
+    fun loadItems(){
+    _items.clear()
+    _items.addAll(useCase.getAllStockItems())
+    }
 
+   // CRUD :
    fun addStockItem(item: StockItem){
         useCase.addStock(item)
+        loadItems()
+   }
+
+   fun updateStockItem(item: StockItem){
+        useCase.updateStock(item)
+        loadItems()
    }
 
    fun deleteStockItem(id: Int){
         useCase.deleteStock(id)
+        loadItems()
    }
 
-   fun updateStockItem(item: StockItem){
-       useCase.updateStock(item)
-   }
-
+   // Filters :
    fun getInStockItems(): List<StockItem> {
-        return useCase.getInStockItems()
+        return items.filter { it.quantity > 0 }
    }
 
    fun getOutOfStockItems(): List<StockItem> {
-       return useCase.getOutOfStockItems()
+        return items.filter { it.quantity == 0 }
    }
+
+   fun getLowStockItems(): List<StockItem> {
+       return items.filter{it.quantity <= it.reorderLevel}
+   }
+
 }

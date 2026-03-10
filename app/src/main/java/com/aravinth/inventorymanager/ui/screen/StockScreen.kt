@@ -24,7 +24,7 @@ import com.aravinth.inventorymanager.viewmodel.StockViewModel
 @Composable
 fun StockScreen(navController: NavController) {
     val viewModel: StockViewModel = viewModel()
-    val allItems = viewModel.getAllStockItems()
+    val allItems = viewModel.items
     val lowStockItems = viewModel.getLowStockItems()
     Scaffold(floatingActionButton = {
         FloatingActionButton(onClick = {navController.navigate(Screen.AddStock.route)})
