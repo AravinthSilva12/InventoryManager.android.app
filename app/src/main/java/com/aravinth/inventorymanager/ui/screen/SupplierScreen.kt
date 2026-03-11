@@ -10,6 +10,6 @@ fun SupplierScreen(){
     Box(modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        Text("Suppliers screen")
+        Text("Supplier screen")
     }
 }
