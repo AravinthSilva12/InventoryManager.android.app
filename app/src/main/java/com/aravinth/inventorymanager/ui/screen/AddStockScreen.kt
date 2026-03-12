@@ -1,4 +1,5 @@
 package com.aravinth.inventorymanager.ui.screen
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,8 +22,10 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.aravinth.inventorymanager.domain.model.StockItem
+import com.aravinth.inventorymanager.ui.navigation.Screen
 import com.aravinth.inventorymanager.viewmodel.StockViewModel
 
+@SuppressLint("SuspiciousIndentation")
 @Composable
 fun AddStockScreen(navController: NavController) {
     val viewModel: StockViewModel = viewModel()

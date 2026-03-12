@@ -1,14 +1,17 @@
 package com.aravinth.inventorymanager.data.repository
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.aravinth.inventorymanager.domain.model.StockItem
 import com.aravinth.inventorymanager.domain.repository.StockRepository
+import com.aravinth.inventorymanager.viewmodel.StockViewModel
 
 class InMemoryStockRepository: StockRepository {
-    private val items = mutableListOf<StockItem>()
-    private var nextId = 1
+    companion object {   private val items = mutableListOf<StockItem>()
+                         private var nextId = 1
+    }
     // Add stock item :
     override fun addStockItem(item: StockItem){
-        items.add(item)
         item.id = nextId++
+        items.add(item)
     }
     // Get all stock items :
     override fun getAllStockItems(): List<StockItem> {

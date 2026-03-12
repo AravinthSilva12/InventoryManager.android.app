@@ -14,7 +14,7 @@ class StockViewModel: ViewModel() {
 
    // UI state
    private val _items = mutableStateListOf<StockItem>()
-   val items: List<StockItem> = _items
+    val items: List<StockItem> get() = _items
 
    // Initialization :
    init {

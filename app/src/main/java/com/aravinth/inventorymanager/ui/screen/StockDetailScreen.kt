@@ -10,17 +10,20 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.aravinth.inventorymanager.ui.navigation.Screen
 import com.aravinth.inventorymanager.viewmodel.StockViewModel
 
 @Composable
 fun StockDetailScreen(navController: NavController, itemId: Int) {
     val viewModel: StockViewModel = viewModel()
+    LaunchedEffect(Unit) { viewModel.loadItems() }
     val item = viewModel.items.find { it.id == itemId }
     if (item == null) {
         Text("Item not found!")
