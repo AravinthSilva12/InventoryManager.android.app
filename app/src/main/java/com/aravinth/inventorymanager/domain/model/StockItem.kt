@@ -1,7 +1,11 @@
 package com.aravinth.inventorymanager.domain.model
-
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+@Entity(tableName = "stock_items")
 data class StockItem (
-    var id: Int,
+    @PrimaryKey
+    var id: Int = 0,
+
     val name: String,
     val purchasePrice: Double,
     val sellingPrice: Double,

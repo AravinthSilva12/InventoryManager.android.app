@@ -2,6 +2,7 @@ package com.aravinth.inventorymanager.viewmodel
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import com.aravinth.inventorymanager.data.repository.InMemoryStockRepository
+import com.aravinth.inventorymanager.data.repository.RoomStockRepository
 import com.aravinth.inventorymanager.domain.model.StockItem
 import com.aravinth.inventorymanager.domain.usecase.StockUseCase
 
@@ -9,7 +10,7 @@ class StockViewModel: ViewModel() {
 
    // dependencies :
 
-   companion object {private val repository = InMemoryStockRepository()}
+   companion object {private lateinit var repository: RoomStockRepository}
    private val useCase = StockUseCase(repository)
 
    // UI state
