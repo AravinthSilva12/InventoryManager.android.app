@@ -1,4 +1,5 @@
 package com.aravinth.inventorymanager.ui.screen
+import android.view.RoundedCorner
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -12,10 +13,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -38,6 +42,7 @@ import com.aravinth.inventorymanager.domain.model.StockFilter
 import com.aravinth.inventorymanager.ui.navigation.Screen
 import com.aravinth.inventorymanager.viewmodel.StockViewModel
 
+
 @Composable
 fun StockScreen(navController: NavController) {
     val viewModel: StockViewModel = viewModel()
@@ -45,52 +50,74 @@ fun StockScreen(navController: NavController) {
     val allItems = viewModel.items
     var selectedFilter by remember { mutableStateOf(StockFilter.ALL) }
     Scaffold(floatingActionButton = {
-        FloatingActionButton(onClick = {navController.navigate(Screen.AddStock.route)})
+        FloatingActionButton(onClick = { navController.navigate(Screen.AddStock.route) })
         { Icon(Icons.Default.Add, contentDescription = "Add Stock") }
     })
-      {padding ->
-        val filteredItems = when(selectedFilter) {
+    { padding ->
+        val filteredItems = when (selectedFilter) {
             StockFilter.LOW -> allItems.filter { it.quantity <= it.reorderLevel }
             StockFilter.IN_STOCK -> allItems.filter { it.quantity > 0 }
             StockFilter.OUT_OF_STOCK -> allItems.filter { it.quantity == 0 }
-            StockFilter.ALL ->
-                allItems
+            StockFilter.ALL -> allItems
         }
 
-        LazyColumn(modifier = Modifier.fillMaxSize().padding(padding).padding(16.dp)) {
+        LazyColumn(modifier = Modifier.fillMaxSize().padding(padding).padding(
+            start = 16.dp, end = 16.dp, top = 4.dp, bottom = 8.dp)) {
             item {
-                Text(text = "Stock Dashboard", fontSize = 22.sp, fontWeight = FontWeight.Bold)
+                Text(
+                    text = "Stock Dashboard",
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(start = 4.dp)
+                )
                 Spacer(modifier = Modifier.height(16.dp))
             }
 
             // Filter
-           item {
-               Row(
-                   modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()).padding(vertical = 8.dp),
-                   horizontalArrangement = Arrangement.SpaceEvenly
-               )
-               {
-                   Button(onClick = { selectedFilter = StockFilter.ALL}) {
-                       Text("ALL")
-                   }
-                   Button(onClick = { selectedFilter = StockFilter.LOW}) {
-                       Text("Low")
-                   }
-                   Button(onClick = { selectedFilter = StockFilter.IN_STOCK}) {
-                       Text("In_Stock")
-                   }
-                   Button(onClick = { selectedFilter = StockFilter.OUT_OF_STOCK}) {
-                       Text("Out_of_Stock")
-                   }
-               }
-           }
+            item {
+                Text(text = "Filter by", fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
+                Spacer(modifier = Modifier.height(8.dp))
+            }
+            item {
+                Row(
+                    modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState())
+                        .padding(vertical = 8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                )
+                {
+                    FilterChip(
+                        selected = selectedFilter == StockFilter.ALL,
+                        onClick = { selectedFilter = StockFilter.ALL },
+                        label = { Text("All") }
+                    )
 
+                    FilterChip(
+                        selected = selectedFilter == StockFilter.LOW,
+                        onClick = { selectedFilter = StockFilter.LOW },
+                        label = { Text("Low") })
+
+                    FilterChip(
+                        selected = selectedFilter == StockFilter.IN_STOCK,
+                        onClick = { selectedFilter = StockFilter.IN_STOCK },
+                        label = { Text("In Stock") }
+                    )
+
+                    FilterChip(
+                        selected = selectedFilter == StockFilter.OUT_OF_STOCK,
+                        onClick = { selectedFilter = StockFilter.OUT_OF_STOCK },
+                        label = { Text("Out of Stock", maxLines = 1) }
+                    )
+                }
+            }
+            item { Spacer(modifier = Modifier.height(16.dp)) }
             // Empty state handler :
-            if(filteredItems.isEmpty()) {
+            if (filteredItems.isEmpty()) {
                 item {
-                    Column(modifier = Modifier.fillMaxWidth().padding(32.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text("No Stock items yet")
+                    Column(
+                        modifier = Modifier.fillMaxWidth().padding(32.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text("📦No Stock items yet")
                         Spacer(modifier = Modifier.height(8.dp))
                         Text("Tap + to add your first item")
                     }
@@ -99,17 +126,28 @@ fun StockScreen(navController: NavController) {
 
             // All stock items :
             items(filteredItems) { item ->
-            Row(modifier = Modifier.fillMaxWidth().clickable{
-                navController.navigate("Stock_detail/${item.id}")}.padding(vertical = 6.dp),
-                horizontalArrangement = Arrangement.SpaceBetween) {
-                Text(
-                    "${item.name}  (Qty: ${item.quantity})",
-                    modifier = Modifier.padding(vertical = 4.dp)
-                    )
-                    IconButton(onClick = {viewModel.deleteStockItem(item.id)}) {
-                        Icon(imageVector = Icons.Default.Delete, contentDescription = "Delete")
+                Card(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp).clickable{
+                    navController.navigate("Stock_detail/${item.id}")}, elevation =
+                    CardDefaults.cardElevation(defaultElevation = 2.dp),
+                    shape = RoundedCornerShape(16.dp))
+                {
+                    Row(
+                        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column{
+                            Text(text = item.name, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                            Spacer(modifier = Modifier.height(2.dp))
+                            Text(text = "Qty: ${item.quantity}", fontSize = 13.sp)
+                        }
+
+                        IconButton(onClick = { viewModel.deleteStockItem(item.id) }) {
+                            Icon(imageVector = Icons.Default.Delete, contentDescription = "Delete")
+                        }
                     }
                 }
+
             }
         }
     }
