@@ -1,5 +1,6 @@
 package com.aravinth.inventorymanager.ui.navigation
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.material3.Scaffold
@@ -18,28 +19,45 @@ import com.aravinth.inventorymanager.ui.screen.HomeScreen
 import com.aravinth.inventorymanager.ui.screen.StockDetailScreen
 import com.aravinth.inventorymanager.ui.screen.StockScreen
 import com.aravinth.inventorymanager.ui.screen.SupplierScreen
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.navigationBarsPadding
 
 @Composable
 fun MainScreen(){
     val navController = rememberNavController()
-Scaffold(  contentWindowInsets = WindowInsets.safeDrawing, bottomBar = { BottomNavigationBar(navController) }) { innerPadding ->
-    NavHost(navController = navController,
+Scaffold(
+    bottomBar = {
+        Box(modifier = Modifier.navigationBarsPadding())
+        { BottomNavigationBar(navController) }
+    }
+) { innerPadding ->
+        NavHost(
+            navController = navController,
             startDestination = Screen.Home.route,
             modifier = Modifier.padding(innerPadding)
-           ) {
-        composable(Screen.Home.route ) { HomeScreen() }
-        composable(Screen.Stock.route) { StockScreen(navController) }
-        composable(Screen.AddStock.route) { AddStockScreen(navController) }
-        composable(route = "Stock_detail/{id}", arguments = listOf(navArgument("id") {type = NavType.IntType }))
-                                 {backStateEntry -> val id = backStateEntry.arguments?.getInt("id")?:0
-                                     StockDetailScreen(navController, id) }
-        composable(route = "edit_stock/{id}", arguments = listOf(navArgument("id"){type = NavType.IntType}))
-                                 {backStateEntry -> val id = backStateEntry.arguments?.getInt("id")?:0
-                                     EditStockScreen(navController,id)
-                                 }
-        composable(Screen.Billing.route) { BillingScreen() }
-        composable(Screen.Suppliers.route) { SupplierScreen() }
-        composable(Screen.CRM.route) { CrmScreen() }
+        ) {
+            composable(Screen.Home.route) { HomeScreen() }
+            composable(Screen.Stock.route) { StockScreen(navController) }
+            composable(Screen.AddStock.route) { AddStockScreen(navController) }
+            composable(
+                route = "Stock_detail/{id}",
+                arguments = listOf(navArgument("id") { type = NavType.IntType })
+            )
+            { backStateEntry ->
+                val id = backStateEntry.arguments?.getInt("id") ?: 0
+                StockDetailScreen(navController, id)
+            }
+            composable(
+                route = "edit_stock/{id}",
+                arguments = listOf(navArgument("id") { type = NavType.IntType })
+            )
+            { backStateEntry ->
+                val id = backStateEntry.arguments?.getInt("id") ?: 0
+                EditStockScreen(navController, id)
+            }
+            composable(Screen.Billing.route) { BillingScreen() }
+            composable(Screen.Suppliers.route) { SupplierScreen() }
+            composable(Screen.CRM.route) { CrmScreen() }
+        }
     }
-  }
 }
