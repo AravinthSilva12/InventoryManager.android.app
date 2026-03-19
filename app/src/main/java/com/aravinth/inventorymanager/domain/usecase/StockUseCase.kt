@@ -4,35 +4,35 @@ import com.aravinth.inventorymanager.domain.repository.StockRepository
 
 class StockUseCase (private val repository: StockRepository) {
     // add item :
-    fun addStock(item: StockItem) {
+    suspend fun addStock(item: StockItem) {
         repository.addStockItem(item)
     }
     // get all items :
-    fun getAllStockItems():List<StockItem> {
+    suspend fun getAllStockItems():List<StockItem> {
         return repository.getAllStockItems()
     }
     // get item by id :
-    fun getStockById(id: Int): StockItem? {
+    suspend fun getStockById(id: Int): StockItem? {
         return repository.getStockItemById(id)
     }
     // delete item :
-    fun deleteStock(id: Int){
+    suspend fun deleteStock(id: Int){
         repository.deleteStockItem(id)
     }
     // update item :
-    fun updateStock(item: StockItem) {
+    suspend fun updateStock(item: StockItem) {
         repository.updateStockItem(item)
     }
     // get low stock items :
-    fun getLowStockItems(): List<StockItem> {
+    suspend fun getLowStockItems(): List<StockItem> {
      return repository.getAllStockItems().filter { it.quantity <= it.reorderLevel }
     }
     // get In stock items :
-    fun getInStockItems(): List<StockItem> {
+    suspend fun getInStockItems(): List<StockItem> {
         return repository.getAllStockItems().filter { it.quantity > 0 }
     }
     // get Out of stock items :
-    fun getOutOfStockItems(): List<StockItem> {
+    suspend fun getOutOfStockItems(): List<StockItem> {
     return repository.getAllStockItems().filter { it.quantity == 0 }
     }
 }

@@ -1,5 +1,6 @@
 package com.aravinth.inventorymanager.ui.screen
 
+import android.app.Application
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,10 +16,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.aravinth.inventorymanager.ui.navigation.Screen
@@ -27,7 +31,15 @@ import com.aravinth.inventorymanager.viewmodel.StockViewModel
 
 @Composable
 fun EditStockScreen(navController: NavController, itemId:Int){
-val viewModel: StockViewModel = viewModel()
+val context = LocalContext.current.applicationContext as Application
+val viewModel: StockViewModel = viewModel(
+    factory = object: ViewModelProvider.Factory{
+        override fun <T: ViewModel>
+                create(modelClass: Class<T>): T {
+            return StockViewModel(context) as T
+        }
+    }
+)
 val item = viewModel.items.find { it.id == itemId }
     if(item == null){
         Text("Item not found")

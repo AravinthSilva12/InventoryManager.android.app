@@ -44,10 +44,21 @@ import com.aravinth.inventorymanager.domain.model.StockFilter
 import com.aravinth.inventorymanager.domain.model.StockItem
 import com.aravinth.inventorymanager.ui.navigation.Screen
 import com.aravinth.inventorymanager.viewmodel.StockViewModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import android.app.Application
+import androidx.compose.ui.platform.LocalContext
 
 @Composable
 fun StockScreen(navController: NavController) {
-    val viewModel: StockViewModel = viewModel()
+    val context = LocalContext.current.applicationContext as Application
+    val viewModel: StockViewModel = viewModel(factory = object: ViewModelProvider.Factory{
+        override fun <T: ViewModel>
+                create(modelClass: Class<T>): T {
+            return StockViewModel(context) as T
+        }
+    }
+    )
     LaunchedEffect(Unit) { viewModel.loadItems() }
     var itemToDelete by remember { mutableStateOf<StockItem?>(null) }
     val allItems = viewModel.items
