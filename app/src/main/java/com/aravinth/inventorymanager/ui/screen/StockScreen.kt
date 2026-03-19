@@ -1,4 +1,5 @@
 package com.aravinth.inventorymanager.ui.screen
+import android.app.Application
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -35,19 +36,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.aravinth.inventorymanager.domain.model.StockFilter
 import com.aravinth.inventorymanager.domain.model.StockItem
 import com.aravinth.inventorymanager.ui.navigation.Screen
 import com.aravinth.inventorymanager.viewmodel.StockViewModel
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import android.app.Application
-import androidx.compose.ui.platform.LocalContext
 
 @Composable
 fun StockScreen(navController: NavController) {
@@ -201,7 +201,7 @@ fun StockScreen(navController: NavController) {
     if (itemToDelete != null) {
         AlertDialog(onDismissRequest = { itemToDelete = null },
         title = { Text("Delete item") },
-        text = { Text("Are you sure you want to delete this item?") },
+        text = { Text("Delete\"${itemToDelete?.name}\"?\nThis action cannot be undone.") },
         confirmButton = {
             TextButton(onClick = {
                 viewModel.deleteStockItem(itemToDelete!!.id)
