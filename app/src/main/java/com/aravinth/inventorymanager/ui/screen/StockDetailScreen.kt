@@ -57,7 +57,6 @@ fun StockDetailScreen(navController: NavController, itemId: Int) {
 
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
         Text("Stock details", fontSize = 22.sp, fontWeight = FontWeight.Bold)
-
         Spacer(modifier = Modifier.height(16.dp))
 
         if (isLowStock) {
@@ -81,7 +80,6 @@ fun StockDetailScreen(navController: NavController, itemId: Int) {
 
             Button(onClick = {
                 itemToDelete = item
-                navController.popBackStack()
             }) {
                 Text("Delete")
             }

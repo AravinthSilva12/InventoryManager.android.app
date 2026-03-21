@@ -1,5 +1,6 @@
 package com.aravinth.inventorymanager.ui.screen
 import android.app.Application
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -51,11 +52,12 @@ import com.aravinth.inventorymanager.viewmodel.StockViewModel
 
 @Composable
 fun StockScreen(navController: NavController) {
-    val context = LocalContext.current.applicationContext as Application
+    val context = LocalContext.current
+    val application = context.applicationContext as Application
     val viewModel: StockViewModel = viewModel(factory = object: ViewModelProvider.Factory{
         override fun <T: ViewModel>
                 create(modelClass: Class<T>): T {
-            return StockViewModel(context) as T
+            return StockViewModel(application) as T
         }
     }
     )
@@ -205,6 +207,7 @@ fun StockScreen(navController: NavController) {
         confirmButton = {
             TextButton(onClick = {
                 viewModel.deleteStockItem(itemToDelete!!.id)
+                Toast.makeText(context, "Item deleted", Toast.LENGTH_SHORT).show()
                 itemToDelete = null
             }) {
                 Text("Delete")
