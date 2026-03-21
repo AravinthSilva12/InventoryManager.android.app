@@ -18,9 +18,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.List
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -66,9 +68,23 @@ fun StockScreen(navController: NavController) {
     val allItems = viewModel.items
     var selectedFilter by remember { mutableStateOf(StockFilter.ALL) }
     Scaffold(floatingActionButton = {
-        FloatingActionButton(onClick = { navController.navigate(Screen.AddStock.route) })
-        { Icon(Icons.Default.Add, contentDescription = "Add Stock") }
-    })
+             Row(horizontalArrangement = Arrangement.spacedBy(12.dp))
+             {
+          //Stock data button:
+                 ExtendedFloatingActionButton(
+                     onClick = { navController.navigate("stock_data") },
+                     icon = {
+                       Icon(Icons.Default.List, contentDescription = "Stock Data")
+                     },
+                     text = {
+                       Text("Stock Data")
+                     }
+                 )
+         // Add button:
+                 FloatingActionButton(onClick = { navController.navigate(Screen.AddStock.route) })
+                 { Icon(Icons.Default.Add, contentDescription = "Add Stock") }
+             }
+           })
     { innerPadding ->
         val filteredItems = when (selectedFilter) {
             StockFilter.LOW -> allItems.filter { it.quantity <= it.reorderLevel }
