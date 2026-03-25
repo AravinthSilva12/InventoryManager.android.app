@@ -1,15 +1,14 @@
 package com.aravinth.inventorymanager.viewmodel
-import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.AndroidViewModel
 import android.app.Application
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableStateListOf
-import androidx.navigation.NavController
+import androidx.compose.runtime.setValue
+import androidx.lifecycle.AndroidViewModel
 import com.aravinth.inventorymanager.data.repository.InMemoryBillRepository
 import com.aravinth.inventorymanager.domain.model.Bill
 import com.aravinth.inventorymanager.domain.model.BillItem
-import com.aravinth.inventorymanager.domain.repository.BillRepository
 import com.aravinth.inventorymanager.domain.usecase.BillUseCase
-import kotlinx.coroutines.launch
 
 class BillViewModel(application: Application) :
     AndroidViewModel(application) {
@@ -20,7 +19,7 @@ class BillViewModel(application: Application) :
     //UI state:
     private val _items = mutableStateListOf<BillItem>()
     val items: List<BillItem> get() = _items
-    private var _total = 0.0
+    private var _total by mutableDoubleStateOf(0.0)
     val total: Double get() = _total
 
     //Initialize:
@@ -46,6 +45,7 @@ class BillViewModel(application: Application) :
             useCase.clearBill()
          loadItems()
     }
+
 
     fun generateBill(): Bill {
             val bill = useCase.generateBill()

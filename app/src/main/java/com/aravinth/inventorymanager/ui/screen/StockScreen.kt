@@ -41,6 +41,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
@@ -51,6 +52,7 @@ import com.aravinth.inventorymanager.domain.model.StockFilter
 import com.aravinth.inventorymanager.domain.model.StockItem
 import com.aravinth.inventorymanager.ui.navigation.Screen
 import com.aravinth.inventorymanager.viewmodel.StockViewModel
+
 
 @Composable
 fun StockScreen(navController: NavController) {
@@ -238,3 +240,5 @@ fun StockScreen(navController: NavController) {
         } )
     }
 }
+
+

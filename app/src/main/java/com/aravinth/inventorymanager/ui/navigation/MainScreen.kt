@@ -11,7 +11,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.aravinth.inventorymanager.ui.screen.AddStockScreen
-import com.aravinth.inventorymanager.ui.screen.BillingScreen
+import com.aravinth.inventorymanager.ui.screen.BillScreen
 import com.aravinth.inventorymanager.ui.screen.CrmScreen
 import com.aravinth.inventorymanager.ui.screen.EditStockScreen
 import com.aravinth.inventorymanager.ui.screen.HomeScreen
@@ -54,7 +54,8 @@ Scaffold(
                 val id = backStateEntry.arguments?.getInt("id") ?: 0
                 EditStockScreen(navController, id)
             }
-            composable(Screen.Billing.route) { BillingScreen() }
+
+            composable(Screen.Billing.route) { BillScreen(navController) }
             composable(Screen.Suppliers.route) { SupplierScreen() }
             composable(Screen.CRM.route) { CrmScreen() }
         }

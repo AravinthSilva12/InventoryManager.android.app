@@ -1,6 +1,7 @@
 package com.aravinth.inventorymanager.ui.screen
 
 import android.app.Application
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,6 +11,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -38,7 +40,8 @@ fun StockDataScreen(navController: NavController) {
     val totalQuantity = items.sumOf { it.quantity }
     val lowStockCount = items.count { it.quantity <= it.reorderLevel }
 
-    Column(modifier = Modifier.fillMaxSize().padding(16.dp))
+    Column(modifier = Modifier.fillMaxSize().padding(16.dp),
+        verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally)
     { Text("Stock Data", fontSize = 22.sp, fontWeight = FontWeight.Bold)
         Spacer(modifier = Modifier.height(16.dp))
 
