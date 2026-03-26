@@ -2,6 +2,7 @@ package com.aravinth.inventorymanager.ui.screen
 
 import android.annotation.SuppressLint
 import android.app.Application
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -71,21 +72,21 @@ fun BillScreen(navController: NavController) {
     var selectedItem by remember { mutableStateOf<StockItem?>(null) }
 
     Scaffold{innerPadding->
-        Column(modifier = Modifier.padding(innerPadding).padding(16.dp)
-            .fillMaxSize().verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.Start)
+        Column(modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = innerPadding.calculateBottomPadding())
+            .padding(top = 8.dp).fillMaxSize(), verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.Start)
         {
+            //Bill Heading:
             Text("Billing", fontSize = 22.sp, fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier.height(8.dp))
 
-            LazyColumn(modifier = Modifier.fillMaxWidth()) {
+            LazyColumn(modifier = Modifier.fillMaxWidth().weight(0.3f)) {
                 items(stockItems) {item ->
                     Text(text = item.name, modifier = Modifier.fillMaxWidth().
                     clickable(onClick = {selectedItem = item})
                         .padding(8.dp))
                 }
             }
+            Spacer(modifier = Modifier.height(8.dp))
             //Selected item:
             if(selectedItem != null) {
                 Text("Selected: ${selectedItem!!.name}")
@@ -114,15 +115,16 @@ fun BillScreen(navController: NavController) {
 
                     selectedItem = null
                     quantity = ""
+
             }) {
                 Text("Add item")
             }
             Spacer(modifier = Modifier.height(8.dp))
 
             //Bill Items List:
-            LazyColumn(modifier = Modifier.weight(1f)) {
+            LazyColumn(modifier = Modifier.weight(0.7f)) {
                 items(billItems) {item->
-                    Text("${item.name} - ${item.quantity} x ₹${item.sellingPrice}")
+                    Text("${item.name}: ${item.quantity} x ₹${item.sellingPrice}")
                 }
             }
             Spacer(modifier = Modifier.height(4.dp))

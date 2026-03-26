@@ -4,6 +4,7 @@ import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Arrangement.Center
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -41,6 +42,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -69,8 +71,8 @@ fun StockScreen(navController: NavController) {
     var itemToDelete by remember { mutableStateOf<StockItem?>(null) }
     val allItems = viewModel.items
     var selectedFilter by remember { mutableStateOf(StockFilter.ALL) }
-    Scaffold(floatingActionButton = {
-             Row(horizontalArrangement = Arrangement.spacedBy(12.dp))
+    Scaffold(modifier = Modifier.padding(bottom = 8.dp), floatingActionButton = {
+             Row(horizontalArrangement = Arrangement.spacedBy(48.dp))
              {
           //Stock data button:
                  ExtendedFloatingActionButton(
@@ -96,9 +98,8 @@ fun StockScreen(navController: NavController) {
         }
 
         LazyColumn(
-            modifier = Modifier.fillMaxSize().padding(innerPadding)
-                .padding(horizontal = 16.dp).padding(bottom = 80.dp)
-        )
+            modifier = Modifier.fillMaxSize().padding(start = 16.dp, end = 16.dp, bottom = innerPadding.calculateBottomPadding())
+                .padding(top = 8.dp))
         {
             item {
                 Text(
