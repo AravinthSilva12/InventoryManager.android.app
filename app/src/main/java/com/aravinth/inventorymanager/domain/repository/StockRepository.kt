@@ -7,4 +7,6 @@ interface  StockRepository {
     suspend fun getStockItemById(id: Int): StockItem?
     suspend fun deleteStockItem(id: Int)
     suspend fun updateStockItem(item: StockItem)
+
+    suspend fun updateStockQuantity(id:Int, newQty:Int)
 }

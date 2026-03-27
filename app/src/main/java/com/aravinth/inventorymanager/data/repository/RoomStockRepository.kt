@@ -28,4 +28,8 @@ class RoomStockRepository (
     override suspend fun updateStockItem(item: StockItem) {
             dao.update(item)
     }
+
+    override suspend fun updateStockQuantity(id: Int, newQty: Int) {
+        dao.updateStockQuantity(id, newQty)
+    }
 }

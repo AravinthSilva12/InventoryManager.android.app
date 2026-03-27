@@ -3,6 +3,7 @@ package com.aravinth.inventorymanager.ui.screen
 import android.annotation.SuppressLint
 import android.app.Application
 import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -29,6 +30,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -66,8 +68,8 @@ fun BillScreen(navController: NavController) {
     LaunchedEffect(Unit) { billViewModel.loadItems() }
     val total = billViewModel.total
     val billItems = billViewModel.items
-    val stockItems = stockViewModel.items
-
+    var searchQuery by remember { mutableStateOf("") }
+    val filteredItems = stockViewModel.items.filter { it.name.contains(searchQuery, ignoreCase = true) }
     var quantity by remember { mutableStateOf("") }
     var selectedItem by remember { mutableStateOf<StockItem?>(null) }
 
@@ -79,10 +81,17 @@ fun BillScreen(navController: NavController) {
             Text("Billing", fontSize = 22.sp, fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier.height(8.dp))
 
+            //Search Field:
+            OutlinedTextField(value = searchQuery, onValueChange = {searchQuery = it}, label = {Text("Search item")},
+                modifier = Modifier.fillMaxWidth())
+
             LazyColumn(modifier = Modifier.fillMaxWidth().weight(0.3f)) {
-                items(stockItems) {item ->
-                    Text(text = item.name, modifier = Modifier.fillMaxWidth().
-                    clickable(onClick = {selectedItem = item})
+                items(filteredItems) {item ->
+                    Text(text = item.name, modifier = Modifier.fillMaxWidth().background(
+                        if(selectedItem == item) Color(0xFFE0E0E0) else Color.Transparent
+                    ).
+                    clickable{selectedItem = item
+                              searchQuery = ""}
                         .padding(8.dp))
                 }
             }
@@ -102,6 +111,12 @@ fun BillScreen(navController: NavController) {
             )
             Spacer(modifier = Modifier.height(8.dp))
 
+            //Empty selection logic:
+            val isValid = selectedItem != null &&
+                    quantity.toIntOrNull() != null &&
+                    quantity.toIntOrNull()!!> 0 &&
+                    quantity.toIntOrNull()!! <= selectedItem!!.quantity
+
             //Add button:
             Button(modifier = Modifier.fillMaxWidth().padding(4.dp),
                 onClick = {
@@ -112,11 +127,11 @@ fun BillScreen(navController: NavController) {
                     sellingPrice = selected.sellingPrice, quantity = qty)
 
                     billViewModel.addItem(item)
-
                     selectedItem = null
                     quantity = ""
-
-            }) {
+                },
+                enabled = isValid
+            ) {
                 Text("Add item")
             }
             Spacer(modifier = Modifier.height(8.dp))

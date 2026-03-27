@@ -31,4 +31,9 @@ class InMemoryStockRepository: StockRepository {
         if(index != -1)
             items[index] = item
     }
+
+    override suspend fun updateStockQuantity(id: Int, newQty: Int) {
+         val item = items.find{ it.id == id }
+         if (item != null) { item.quantity = newQty  }
+    }
 }

@@ -9,7 +9,7 @@ data class StockItem (
     val name: String,
     val purchasePrice: Double,
     val sellingPrice: Double,
-    val quantity: Int,
+    var quantity: Int,
     val reorderLevel: Int,
     val supplierId: String? = null
 )

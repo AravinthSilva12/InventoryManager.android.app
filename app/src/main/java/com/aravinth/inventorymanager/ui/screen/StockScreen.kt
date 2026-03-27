@@ -6,6 +6,7 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Arrangement.Center
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -98,8 +99,8 @@ fun StockScreen(navController: NavController) {
         }
 
         LazyColumn(
-            modifier = Modifier.fillMaxSize().padding(start = 16.dp, end = 16.dp, bottom = innerPadding.calculateBottomPadding())
-                .padding(top = 8.dp))
+            modifier = Modifier.fillMaxSize().padding(start = 16.dp, end = 16.dp),
+            contentPadding = PaddingValues(top = 8.dp, bottom = innerPadding.calculateBottomPadding() + 80.dp))
         {
             item {
                 Text(
