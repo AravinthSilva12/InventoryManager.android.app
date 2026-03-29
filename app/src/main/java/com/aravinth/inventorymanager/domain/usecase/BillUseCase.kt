@@ -1,10 +1,13 @@
 package com.aravinth.inventorymanager.domain.usecase
+import com.aravinth.inventorymanager.domain.repository.BillHistoryRepository
 import com.aravinth.inventorymanager.domain.model.Bill
 import com.aravinth.inventorymanager.domain.model.BillItem
 import com.aravinth.inventorymanager.domain.repository.BillRepository
 import com.aravinth.inventorymanager.domain.repository.StockRepository
 
-class BillUseCase(private val repository: BillRepository, private val stockRepository: StockRepository)
+class BillUseCase(private val repository: BillRepository,
+                  private val historyRepository: BillHistoryRepository,
+                  private val stockRepository: StockRepository)
 {
     //Add Bill Item:
     fun addItem(item: BillItem){
@@ -31,6 +34,7 @@ class BillUseCase(private val repository: BillRepository, private val stockRepos
         val billItems = repository.getBillItems()
         val total = repository.getTotalAmount()
 
+        //1.Validate & update stock:
         for(billItem in billItems) {
             val stockItem = stockRepository.getStockItemById(billItem.stockItemId)
 
@@ -45,10 +49,24 @@ class BillUseCase(private val repository: BillRepository, private val stockRepos
             }
         }
 
+        //2.Create Bill (WITHOUT items list):
+        val bill = Bill(totalAmount = total, timestamp = System.currentTimeMillis())
+
+        //3. Save Bill first:
+        val billId = historyRepository.insertBillAndReturnId(bill)
+
+        //4.Convert items --> attach billId:
+        val billItemsWithId = billItems.map {it.copy(billId = billId)}
+
+        //5.Save items:
+        historyRepository.insertBillItems(billItemsWithId)
+
+        //6.Clear current bill:
+        repository.clearBill()
+
         return Result.success (
             Bill(
-            id = 0,
-            items = billItems,
+            id = billId,
             totalAmount = total,
             timestamp = System.currentTimeMillis() )
         )

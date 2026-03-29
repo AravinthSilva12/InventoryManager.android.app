@@ -3,15 +3,20 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.aravinth.inventorymanager.domain.model.Bill
+import com.aravinth.inventorymanager.domain.model.BillItem
 import com.aravinth.inventorymanager.domain.model.StockItem
 
 
 @Database(
-entities = [StockItem::class],
-version = 1
+entities = [StockItem::class,
+           Bill::class,
+           BillItem::class],
+version = 2
 )
 abstract class AppDatabase: RoomDatabase() {
     abstract fun stockDao(): StockDao
+    abstract fun billDao(): BillDao
 
     companion object {
         @Volatile
@@ -21,6 +26,7 @@ abstract class AppDatabase: RoomDatabase() {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(context.applicationContext,
                     AppDatabase::class.java, "inventory_db")
+                    .fallbackToDestructiveMigration()
                 .build()
 
                 INSTANCE = instance

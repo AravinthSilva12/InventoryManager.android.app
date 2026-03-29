@@ -2,26 +2,32 @@ package com.aravinth.inventorymanager.ui.screen
 
 import android.annotation.SuppressLint
 import android.app.Application
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.History
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -31,7 +37,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -44,10 +49,12 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.aravinth.inventorymanager.domain.model.BillItem
 import com.aravinth.inventorymanager.domain.model.StockItem
+import com.aravinth.inventorymanager.ui.navigation.Screen
 import com.aravinth.inventorymanager.viewmodel.BillViewModel
 import com.aravinth.inventorymanager.viewmodel.StockViewModel
 
 @SuppressLint("SuspiciousIndentation")
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BillScreen(navController: NavController) {
     val context = LocalContext.current
@@ -72,29 +79,38 @@ fun BillScreen(navController: NavController) {
     val filteredItems = stockViewModel.items.filter { it.name.contains(searchQuery, ignoreCase = true) }
     var quantity by remember { mutableStateOf("") }
     var selectedItem by remember { mutableStateOf<StockItem?>(null) }
+    Scaffold { innerPadding->
+        Column(modifier = Modifier.padding(innerPadding).padding(16.dp)
+            .fillMaxSize().verticalScroll(rememberScrollState())
+        )
+        {   //Bill history button at top:
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically)
+             {
+               Text("Billing", fontSize = 22.sp, fontWeight = FontWeight.Bold)
 
-    Scaffold{innerPadding->
-        Column(modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = innerPadding.calculateBottomPadding())
-            .padding(top = 8.dp).fillMaxSize(), verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.Start)
-        {
-            //Bill Heading:
-            Text("Billing", fontSize = 22.sp, fontWeight = FontWeight.Bold)
-            Spacer(modifier = Modifier.height(8.dp))
+               IconButton(onClick = { navController.navigate(Screen.BillHistory.route) })
+                        {Icon(imageVector = Icons.Default.History, contentDescription = "Bill History") }
+             }
 
             //Search Field:
             OutlinedTextField(value = searchQuery, onValueChange = {searchQuery = it}, label = {Text("Search item")},
                 modifier = Modifier.fillMaxWidth())
 
-            LazyColumn(modifier = Modifier.fillMaxWidth().weight(0.3f)) {
+            if(searchQuery.isNotEmpty() && filteredItems.isNotEmpty()) {
+            LazyColumn(modifier = Modifier.fillMaxWidth().heightIn(max = 150.dp)) {
                 items(filteredItems) {item ->
                     Text(text = item.name, modifier = Modifier.fillMaxWidth().background(
-                        if(selectedItem == item) Color(0xFFE0E0E0) else Color.Transparent
-                    ).
-                    clickable{selectedItem = item
+                        if(selectedItem == item) Color(0xFFE0E0E0)
+                        else Color.Transparent
+                    )
+                        .clickable{selectedItem = item
                               searchQuery = ""}
-                        .padding(8.dp))
+                        .padding(8.dp)
+                    )
                 }
             }
+         }
             Spacer(modifier = Modifier.height(8.dp))
             //Selected item:
             if(selectedItem != null) {
@@ -137,7 +153,8 @@ fun BillScreen(navController: NavController) {
             Spacer(modifier = Modifier.height(8.dp))
 
             //Bill Items List:
-            LazyColumn(modifier = Modifier.weight(0.7f)) {
+            LazyColumn(modifier = Modifier.fillMaxWidth().heightIn(min = 100.dp, max = 250.dp))
+            {
                 items(billItems) {item->
                     Text("${item.name}: ${item.quantity} x ₹${item.sellingPrice}")
                 }
@@ -155,4 +172,5 @@ fun BillScreen(navController: NavController) {
             }
         }
     }
+
 }

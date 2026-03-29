@@ -11,6 +11,7 @@ import com.aravinth.inventorymanager.data.local.AppDatabase
 import com.aravinth.inventorymanager.data.repository.AppContainer
 import com.aravinth.inventorymanager.data.repository.InMemoryBillRepository
 import com.aravinth.inventorymanager.data.repository.InMemoryStockRepository
+import com.aravinth.inventorymanager.data.repository.RoomBillRepository
 import com.aravinth.inventorymanager.data.repository.RoomStockRepository
 import com.aravinth.inventorymanager.domain.model.Bill
 import com.aravinth.inventorymanager.domain.model.BillItem
@@ -23,9 +24,14 @@ class BillViewModel(application: Application) :
     //Dependencies:
     private val repository = AppContainer.billRepository
     private val db = AppDatabase.getDatabase(application)
-    private val stockRepository = RoomStockRepository(db.stockDao())
 
-    private val useCase = BillUseCase(repository, stockRepository)
+
+    private val stockRepository = RoomStockRepository(db.stockDao())
+    private val historyRepository = RoomBillRepository(db.billDao())
+
+    private val useCase = BillUseCase(repository,  historyRepository, stockRepository)
+
+    val bills = historyRepository.getAllBills()
 
     private var _errorMessage by mutableStateOf<String?>(null)
     val errorMessage: String? get() = _errorMessage

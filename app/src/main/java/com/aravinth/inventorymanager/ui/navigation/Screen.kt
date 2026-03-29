@@ -13,6 +13,8 @@ sealed class Screen (val route : String) {
 
      object EditStock: Screen( "edit_stock/{id}")
      object Billing: Screen("billing")
+
+     object BillHistory: Screen("bill_history")
      object Suppliers: Screen("suppliers")
      object CRM: Screen("crm")
 }
