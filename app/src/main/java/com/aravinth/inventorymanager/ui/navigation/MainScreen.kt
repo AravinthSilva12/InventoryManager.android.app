@@ -22,6 +22,7 @@ import com.aravinth.inventorymanager.ui.screen.HomeScreen
 import com.aravinth.inventorymanager.ui.screen.StockDataScreen
 import com.aravinth.inventorymanager.ui.screen.StockDetailScreen
 import com.aravinth.inventorymanager.ui.screen.StockScreen
+import com.aravinth.inventorymanager.ui.screen.SupplierDataScreen
 import com.aravinth.inventorymanager.ui.screen.SupplierScreen
 import com.aravinth.inventorymanager.viewmodel.BillViewModel
 
@@ -40,9 +41,13 @@ Scaffold(
             modifier = Modifier.padding(innerPadding)
         ) {
             composable(Screen.Home.route) { HomeScreen() }
+
             composable(Screen.Stock.route) { StockScreen(navController) }
+
             composable(Screen.AddStock.route) { AddStockScreen(navController) }
+
             composable (Screen.StockData.route) {StockDataScreen(navController)}
+
             composable(
                 route = "Stock_detail/{id}",
                 arguments = listOf(navArgument("id") { type = NavType.IntType })
@@ -51,6 +56,7 @@ Scaffold(
                 val id = backStateEntry.arguments?.getInt("id") ?: 0
                 StockDetailScreen(navController, id)
             }
+
             composable(
                 route = "edit_stock/{id}",
                 arguments = listOf(navArgument("id") { type = NavType.IntType })
@@ -74,8 +80,10 @@ Scaffold(
                     }
                 )
             }
+            composable(Screen.Suppliers.route) { SupplierScreen(navController) }
 
-            composable(Screen.Suppliers.route) { SupplierScreen() }
+            composable(Screen.SupplierData.route) { SupplierDataScreen(navController) }
+
             composable(Screen.CRM.route) { CrmScreen() }
         }
     }
