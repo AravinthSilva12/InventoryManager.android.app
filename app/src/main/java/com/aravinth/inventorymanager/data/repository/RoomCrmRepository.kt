@@ -6,16 +6,15 @@ import com.aravinth.inventorymanager.domain.repository.CrmRepository
 import kotlinx.coroutines.flow.Flow
 
 class RoomCrmRepository(private val crmDao: CrmDao) : CrmRepository {
-    override fun addCustomer(customer: Crm) {
+    override suspend fun addCustomer(customer: Crm) {
        crmDao.insertCustomer(customer)
     }
 
-    override fun getCustomer(): Flow<List<Crm>> {
+    override suspend fun getCustomer(): Flow<List<Crm>> {
         return crmDao.getAllCustomers()
     }
 
-    override fun deleteCustomer(customerId: Crm) {
+    override suspend fun deleteCustomer(customerId: Int) {
        crmDao.deleteCustomer(customerId)
     }
-
 }

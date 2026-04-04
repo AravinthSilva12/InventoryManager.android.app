@@ -10,12 +10,11 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface CrmDao {
   @Insert
-    suspend fun insertCustomer(crm: Crm)
+  suspend fun insertCustomer(crm: Crm)
 
-  @Query("SELECT * FROM CRM ORDER BY id DESC")
+  @Query("SELECT * FROM CRM ORDER BY customerId DESC")
   suspend fun getAllCustomers(): Flow<List<Crm>>
 
   @Delete
-  suspend fun deleteCustomer(customerId: Crm)
-
+  suspend fun deleteCustomer(customerId: Int)
 }
