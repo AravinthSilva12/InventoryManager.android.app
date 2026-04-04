@@ -8,18 +8,18 @@ import com.aravinth.inventorymanager.data.repository.RoomCrmRepository
 import com.aravinth.inventorymanager.domain.repository.CrmRepository
 import com.aravinth.inventorymanager.domain.usecase.CrmUseCase
 import kotlinx.coroutines.launch
-import java.util.Date
 
 class CrmViewModel(application: Application) : AndroidViewModel(application) {
      private val db = AppDatabase.getDatabase(application)
      private val repository: CrmRepository = RoomCrmRepository(db.crmDao())
-     val useCase = CrmUseCase(repository)
+     private val useCase = CrmUseCase(repository)
 
+     val customers = useCase.getCustomer()
      fun addCustomer(
           customerName: String,
           customerPhone: String,
           customerAddress: String,
-          purchaseDate: Date
+          purchaseDate: Long
      ) {
           viewModelScope.launch {
                useCase.addCustomer(

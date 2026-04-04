@@ -84,7 +84,7 @@ Scaffold(
 
             composable(Screen.SupplierData.route) { SupplierDataScreen(navController) }
 
-            composable(Screen.CRM.route) { CrmScreen() }
+            composable(Screen.CRM.route) { CrmScreen(navController) }
         }
     }
 }

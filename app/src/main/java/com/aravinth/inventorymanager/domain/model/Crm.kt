@@ -9,5 +9,5 @@ data class Crm(
     val customerName: String,
     val customerPhone: String,
     val customerAddress: String,
-    var purchaseDate: Date
+    var purchaseDate: Long
 )

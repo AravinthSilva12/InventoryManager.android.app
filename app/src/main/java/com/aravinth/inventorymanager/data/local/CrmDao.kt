@@ -12,9 +12,9 @@ interface CrmDao {
   @Insert
   suspend fun insertCustomer(crm: Crm)
 
-  @Query("SELECT * FROM CRM ORDER BY customerId DESC")
-  suspend fun getAllCustomers(): Flow<List<Crm>>
+  @Query("SELECT * FROM Crm ORDER BY customerId DESC")
+  fun getAllCustomers(): Flow<List<Crm>>
 
-  @Delete
+  @Query("DELETE FROM Crm WHERE customerId = :customerId")
   suspend fun deleteCustomer(customerId: Int)
 }

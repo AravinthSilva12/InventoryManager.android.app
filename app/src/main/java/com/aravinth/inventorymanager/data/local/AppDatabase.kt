@@ -3,19 +3,25 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import com.aravinth.inventorymanager.domain.model.Bill
 import com.aravinth.inventorymanager.domain.model.BillItem
+import com.aravinth.inventorymanager.domain.model.Crm
 import com.aravinth.inventorymanager.domain.model.StockItem
 import com.aravinth.inventorymanager.domain.model.Supplier
+
 
 
 @Database(
 entities = [StockItem::class,
            Bill::class,
            BillItem::class,
-           Supplier::class],
-version = 3
+           Supplier::class,
+           Crm::class],
+version = 4
 )
+
+@TypeConverters(Converters::class)
 
 abstract class AppDatabase: RoomDatabase() {
     abstract fun stockDao(): StockDao

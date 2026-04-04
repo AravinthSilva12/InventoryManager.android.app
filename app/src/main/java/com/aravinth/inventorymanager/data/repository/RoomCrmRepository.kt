@@ -10,7 +10,7 @@ class RoomCrmRepository(private val crmDao: CrmDao) : CrmRepository {
        crmDao.insertCustomer(customer)
     }
 
-    override suspend fun getCustomer(): Flow<List<Crm>> {
+    override fun getCustomer(): Flow<List<Crm>> {
         return crmDao.getAllCustomers()
     }
 
