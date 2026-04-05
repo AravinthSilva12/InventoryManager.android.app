@@ -16,6 +16,7 @@ import androidx.navigation.navArgument
 import com.aravinth.inventorymanager.ui.screen.AddStockScreen
 import com.aravinth.inventorymanager.ui.screen.BillHistoryScreen
 import com.aravinth.inventorymanager.ui.screen.BillScreen
+import com.aravinth.inventorymanager.ui.screen.CrmDataScreen
 import com.aravinth.inventorymanager.ui.screen.CrmScreen
 import com.aravinth.inventorymanager.ui.screen.EditStockScreen
 import com.aravinth.inventorymanager.ui.screen.HomeScreen
@@ -85,6 +86,8 @@ Scaffold(
             composable(Screen.SupplierData.route) { SupplierDataScreen(navController) }
 
             composable(Screen.CRM.route) { CrmScreen(navController) }
+
+            composable(Screen.CrmData.route) { CrmDataScreen(navController) }
         }
     }
 }

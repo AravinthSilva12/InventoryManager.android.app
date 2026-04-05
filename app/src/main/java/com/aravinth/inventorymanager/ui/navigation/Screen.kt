@@ -19,4 +19,6 @@ sealed class Screen (val route : String) {
 
      object SupplierData: Screen("supplier_data")
      object CRM: Screen("crm")
+
+     object CrmData: Screen("crm_data")
 }

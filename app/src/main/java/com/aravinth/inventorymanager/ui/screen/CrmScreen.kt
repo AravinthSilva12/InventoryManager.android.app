@@ -1,10 +1,8 @@
 package com.aravinth.inventorymanager.ui.screen
 import android.app.Application
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -33,6 +31,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.aravinth.inventorymanager.ui.navigation.Screen
 import com.aravinth.inventorymanager.viewmodel.CrmViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -55,8 +54,8 @@ fun CrmScreen(navController: NavController) {
     val customers by viewModel.customers.collectAsState(initial = emptyList())
     Scaffold(
         topBar = {
-            TopAppBar(title = {Text("CRM")},
-                actions = { IconButton(onClick = {navController.navigate("crm_list")}) {
+            TopAppBar(title = {Text("CRM", fontSize = 20.sp, fontWeight = FontWeight.Bold)},
+                actions = { IconButton(onClick = {navController.navigate(Screen.CrmData.route)}) {
                     Icon(imageVector = Icons.Default.PersonOutline, contentDescription = "View Customers")
                     }
                 }
@@ -67,10 +66,6 @@ fun CrmScreen(navController: NavController) {
         Column(modifier = Modifier.padding(innerPadding).fillMaxSize()
             .padding(16.dp))
         {
-            Text("CRM", fontWeight = FontWeight.Bold, fontSize = 20.sp)
-
-            Spacer(Modifier.height(8.dp))
-
             OutlinedTextField(
                 value = customerName,
                 onValueChange = { customerName = it },
