@@ -41,7 +41,7 @@ Scaffold(
             startDestination = Screen.Home.route,
             modifier = Modifier.padding(innerPadding)
         ) {
-            composable(Screen.Home.route) { HomeScreen() }
+            composable(Screen.Home.route) { HomeScreen(navController) }
 
             composable(Screen.Stock.route) { StockScreen(navController) }
 
