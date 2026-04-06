@@ -2,6 +2,7 @@ package com.aravinth.inventorymanager.data.repository
 import com.aravinth.inventorymanager.data.local.StockDao
 import com.aravinth.inventorymanager.domain.model.StockItem
 import com.aravinth.inventorymanager.domain.repository.StockRepository
+import kotlinx.coroutines.flow.Flow
 
 class RoomStockRepository (
     private val dao:StockDao): StockRepository{
@@ -10,7 +11,7 @@ class RoomStockRepository (
             dao.insert(item)
     }
 
-    override suspend fun getAllStockItems(): List<StockItem> {
+    override fun getAllStockItems(): Flow<List<StockItem>> {
         return dao.getAll()
     }
 

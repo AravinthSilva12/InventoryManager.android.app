@@ -1,8 +1,8 @@
 package com.aravinth.inventorymanager.data.repository
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.aravinth.inventorymanager.domain.model.StockItem
 import com.aravinth.inventorymanager.domain.repository.StockRepository
-import com.aravinth.inventorymanager.viewmodel.StockViewModel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 
 class InMemoryStockRepository: StockRepository {
     companion object {   private val items = mutableListOf<StockItem>()
@@ -14,8 +14,8 @@ class InMemoryStockRepository: StockRepository {
         items.add(item)
     }
     // Get all stock items :
-    override suspend fun getAllStockItems(): List<StockItem> {
-        return items
+    override  fun getAllStockItems(): Flow<List<StockItem>> {
+        return flowOf(items)
     }
     // Get stock item by id :
     override suspend fun getStockItemById(id: Int): StockItem? {

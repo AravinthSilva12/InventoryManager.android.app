@@ -1,6 +1,7 @@
 package com.aravinth.inventorymanager.data.local
 import androidx.room.*
 import com.aravinth.inventorymanager.domain.model.StockItem
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface StockDao {
@@ -14,7 +15,7 @@ interface StockDao {
     suspend fun delete(item: StockItem)
 
     @Query("SELECT * FROM stock_items")
-    suspend fun getAll():List<StockItem>
+    fun getAll(): Flow<List<StockItem>>
 
     @Query("SELECT * FROM stock_items WHERE id = :id")
     suspend fun getById(id: Int): StockItem?

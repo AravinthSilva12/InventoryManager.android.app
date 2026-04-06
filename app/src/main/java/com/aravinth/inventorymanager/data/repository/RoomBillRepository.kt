@@ -1,10 +1,9 @@
 package com.aravinth.inventorymanager.data.repository
 
-import  com.aravinth.inventorymanager.data.local.BillDao
+import com.aravinth.inventorymanager.data.local.BillDao
 import com.aravinth.inventorymanager.domain.model.Bill
 import com.aravinth.inventorymanager.domain.model.BillItem
 import com.aravinth.inventorymanager.domain.repository.BillHistoryRepository
-import com.aravinth.inventorymanager.domain.repository.BillRepository
 import kotlinx.coroutines.flow.Flow
 
 
