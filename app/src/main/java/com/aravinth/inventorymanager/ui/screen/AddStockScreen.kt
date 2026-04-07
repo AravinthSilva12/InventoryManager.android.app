@@ -29,12 +29,11 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.aravinth.inventorymanager.domain.model.StockItem
 import com.aravinth.inventorymanager.viewmodel.StockViewModel
+import com.aravinth.inventorymanager.viewmodel.applicationViewModelFactory
 
 @SuppressLint("SuspiciousIndentation")
 @Composable
@@ -44,13 +43,10 @@ fun AddStockScreen(navController: NavController)
     val application = context.applicationContext as Application
     val focusManager = LocalFocusManager.current
     val viewModel: StockViewModel = viewModel(
-        factory = object: ViewModelProvider.Factory{
-            override fun <T: ViewModel>
-                    create(modelClass: Class<T>): T {
-                return StockViewModel(application) as T
-            }
-        }
+        factory = applicationViewModelFactory(application) {
+            StockViewModel(it) }
     )
+
     // State variables :
     var name by remember { mutableStateOf("") }
     var purchasePrice by remember { mutableStateOf("") }

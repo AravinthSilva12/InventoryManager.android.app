@@ -26,12 +26,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.aravinth.inventorymanager.domain.model.StockItem
 import com.aravinth.inventorymanager.viewmodel.StockViewModel
+import com.aravinth.inventorymanager.viewmodel.applicationViewModelFactory
 
 @Composable
 fun StockDetailScreen(navController: NavController, itemId: Int) {
@@ -39,12 +38,8 @@ fun StockDetailScreen(navController: NavController, itemId: Int) {
     val application = context.applicationContext as Application
 
     val viewModel: StockViewModel = viewModel(
-        factory = object: ViewModelProvider.Factory{
-            override fun <T: ViewModel>
-                    create(modelClass: Class<T>): T {
-                return StockViewModel(application) as T
-            }
-        }
+        factory = applicationViewModelFactory(application) {
+            StockViewModel(it) }
     )
     LaunchedEffect(Unit) { viewModel.loadItems() }
     val item = viewModel.items.find { it.id == itemId }
