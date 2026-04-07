@@ -69,17 +69,6 @@ fun BillScreen(navController: NavController) {
         stockViewModel.loadItems()
     }
 
-    val billViewModel: BillViewModel = viewModel(factory = applicationViewModelFactory(application) {
-        BillViewModel(it) }
-    )
-
-    val stockViewModel: StockViewModel = viewModel(factory = applicationViewModelFactory(application) {
-        StockViewModel(it) }
-    )
-
-    LaunchedEffect(Unit) { billViewModel.loadItems()
-                                  stockViewModel.loadItems()}
-
     val total = billViewModel.total
     val billItems = billViewModel.items
     val errorMessage = billViewModel.errorMessage
@@ -91,7 +80,10 @@ fun BillScreen(navController: NavController) {
     var selectedItem by remember { mutableStateOf<StockItem?>(null) }
 
     val parsedQty = quantity.toIntOrNull()
-    val isValid = selectedItem != null && parsedQty != null && parsedQty > 0 && parsedQty <= (selectedItem?.quantity ?: 0)
+    val isValid = selectedItem != null &&
+            parsedQty != null &&
+            parsedQty > 0 &&
+            parsedQty <= (selectedItem?.quantity ?: 0)
 
     Scaffold { innerPadding ->
         Column(
@@ -110,35 +102,6 @@ fun BillScreen(navController: NavController) {
 
                 IconButton(onClick = { navController.navigate(Screen.BillHistory.route) }) {
                     Icon(imageVector = Icons.Default.History, contentDescription = "Bill History")
-    Scaffold { innerPadding->
-        Column(modifier = Modifier.padding(innerPadding).padding(16.dp)
-            .fillMaxSize().verticalScroll(rememberScrollState())
-        )
-        {   //Bill history button at top:
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically)
-             {
-               Text("Billing", fontSize = 22.sp, fontWeight = FontWeight.Bold)
-
-               IconButton(onClick = { navController.navigate(Screen.BillHistory.route) })
-                        {Icon(imageVector = Icons.Default.History, contentDescription = "Bill History") }
-             }
-
-            //Search Field:
-            OutlinedTextField(value = searchQuery, onValueChange = {searchQuery = it}, label = {Text("Search item")},
-                modifier = Modifier.fillMaxWidth())
-
-            if(searchQuery.isNotEmpty() && filteredItems.isNotEmpty()) {
-            LazyColumn(modifier = Modifier.fillMaxWidth().heightIn(max = 150.dp)) {
-                items(filteredItems) {item ->
-                    Text(text = item.name, modifier = Modifier.fillMaxWidth().background(
-                        if(selectedItem == item) Color(0xFFE0E0E0)
-                        else Color.Transparent
-                    )
-                        .clickable{selectedItem = item
-                              searchQuery = ""}
-                        .padding(8.dp)
-                    )
                 }
             }
 
@@ -183,12 +146,6 @@ fun BillScreen(navController: NavController) {
             )
 
             Spacer(modifier = Modifier.height(8.dp))
-            //Empty selection logic:
-            val parsedQty = quantity.toIntOrNull()
-            val isValid = selectedItem != null &&
-                    parsedQty != null &&
-                    parsedQty > 0 &&
-                    parsedQty <= (selectedItem?.quantity ?: 0)
 
             Button(
                 modifier = Modifier.fillMaxWidth().padding(4.dp),
@@ -235,10 +192,6 @@ fun BillScreen(navController: NavController) {
                 onClick = { billViewModel.generateBill() },
                 enabled = billItems.isNotEmpty()
             ) {
-            //Generate Bill:
-            Button(modifier = Modifier.fillMaxWidth().padding(8.dp),
-                onClick = {billViewModel.generateBill()},
-                enabled = billItems.isNotEmpty()) {
                 Text("Generate Bill")
             }
         }

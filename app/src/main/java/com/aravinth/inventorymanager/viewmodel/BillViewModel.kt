@@ -76,7 +76,4 @@ class BillViewModel(application: Application) : AndroidViewModel(application) {
             }
         }
     }
-    fun clearError(){
-        _errorMessage = null
-    }
 }
