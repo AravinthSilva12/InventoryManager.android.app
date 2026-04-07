@@ -20,8 +20,6 @@ interface StockDao {
     @Query("SELECT * FROM stock_items WHERE id = :id")
     suspend fun getById(id: Int): StockItem?
 
-    @Query("SELECT*FROM stock_items WHERE id = :id")
-    suspend fun getStockItemById(id:Int): StockItem?
 
     @Query("UPDATE stock_items SET quantity = :newQty WHERE id = :id")
     suspend fun updateStockQuantity(id:Int, newQty:Int)
