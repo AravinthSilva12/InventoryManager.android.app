@@ -66,7 +66,6 @@ class BillViewModel(application: Application) :
          loadItems()
     }
 
-
     fun generateBill() {
         viewModelScope.launch {
             val result = useCase.generateBill()
@@ -76,5 +75,8 @@ class BillViewModel(application: Application) :
                 _errorMessage = result.exceptionOrNull()?.message
             }
         }
+    }
+    fun clearError(){
+        _errorMessage = null
     }
 }

@@ -27,12 +27,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.aravinth.inventorymanager.ui.navigation.Screen
 import com.aravinth.inventorymanager.viewmodel.CrmViewModel
+import com.aravinth.inventorymanager.viewmodel.applicationViewModelFactory
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -40,12 +39,9 @@ fun CrmScreen(navController: NavController) {
 
     val context = LocalContext.current
     val application = context.applicationContext as Application
-    val viewModel: CrmViewModel = viewModel(factory = object: ViewModelProvider.Factory{
-        override fun <T: ViewModel>
-                create(modelClass: Class<T>): T {
-            return CrmViewModel(application) as T
-        }
-    })
+    val viewModel: CrmViewModel = viewModel(factory = applicationViewModelFactory(application) {
+        CrmViewModel(it) }
+    )
 
     var customerName by remember { mutableStateOf("") }
     var customerPhone by remember { mutableStateOf("") }

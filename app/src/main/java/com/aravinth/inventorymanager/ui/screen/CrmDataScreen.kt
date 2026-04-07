@@ -23,6 +23,7 @@ import kotlin.collections.emptyList
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import com.aravinth.inventorymanager.viewmodel.applicationViewModelFactory
 
 @Composable
 fun CrmDataScreen(navController: NavController) {
@@ -30,12 +31,8 @@ fun CrmDataScreen(navController: NavController) {
     val application = context.applicationContext as Application
 
     val viewModel: CrmViewModel = viewModel(
-        factory = object: ViewModelProvider.Factory {
-            override fun <T: ViewModel>
-                    create(modelClass: Class<T>): T {
-                return CrmViewModel(application) as T
-            }
-        }
+        factory = applicationViewModelFactory(application) {
+            CrmViewModel(it) }
     )
 
     val customers by viewModel.customers.collectAsState(initial = emptyList())

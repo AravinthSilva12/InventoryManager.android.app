@@ -18,11 +18,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.aravinth.inventorymanager.viewmodel.SupplierViewModel
+import com.aravinth.inventorymanager.viewmodel.applicationViewModelFactory
 
 @Composable
 fun SupplierDataScreen(navController: NavController) {
@@ -30,12 +29,8 @@ fun SupplierDataScreen(navController: NavController) {
     val context = LocalContext.current
     val application = context.applicationContext as Application
 
-    val viewModel: SupplierViewModel = viewModel(factory = object : ViewModelProvider.Factory{
-        override fun <T: ViewModel>
-                create(modelClass: Class<T>): T{
-            return SupplierViewModel(application) as T
-        }
-    }
+    val viewModel: SupplierViewModel = viewModel(factory = applicationViewModelFactory(application) {
+        SupplierViewModel(it) }
     )
 
     val suppliers by viewModel.suppliers.collectAsState(initial = emptyList())
@@ -52,7 +47,7 @@ fun SupplierDataScreen(navController: NavController) {
                     Column(modifier = Modifier.padding(12.dp)) {
                         Text(supplier.name, fontWeight = FontWeight.Bold)
                         Text(supplier.phone)
-                        if(!supplier.address.isNullOrBlank()) {
+                        if(supplier.address.isNotBlank()) {
                             Text(supplier.address)
                         }
                     }

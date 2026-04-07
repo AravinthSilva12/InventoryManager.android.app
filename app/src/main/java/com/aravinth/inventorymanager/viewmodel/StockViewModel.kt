@@ -1,6 +1,9 @@
 package com.aravinth.inventorymanager.viewmodel
 import android.app.Application
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.aravinth.inventorymanager.data.local.AppDatabase
@@ -21,6 +24,9 @@ class StockViewModel(application: Application) : AndroidViewModel(application) {
     private val _items = mutableStateListOf<StockItem>()
     val items: List<StockItem> get() = _items
 
+    private var _isLoading by mutableStateOf(false)
+    val isLoading = _isLoading
+
     // Initialization
     init {
         val db = AppDatabase.getDatabase(application)
@@ -32,9 +38,11 @@ class StockViewModel(application: Application) : AndroidViewModel(application) {
     // Load items
     fun loadItems() {
         viewModelScope.launch {
+            _isLoading = true
             val result = useCase.getAllStockItems().first()
             _items.clear()
             _items.addAll(result)
+            _isLoading = false
         }
     }
 

@@ -27,7 +27,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -43,8 +42,6 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.aravinth.inventorymanager.domain.model.BillItem
@@ -52,6 +49,7 @@ import com.aravinth.inventorymanager.domain.model.StockItem
 import com.aravinth.inventorymanager.ui.navigation.Screen
 import com.aravinth.inventorymanager.viewmodel.BillViewModel
 import com.aravinth.inventorymanager.viewmodel.StockViewModel
+import com.aravinth.inventorymanager.viewmodel.applicationViewModelFactory
 
 @SuppressLint("SuspiciousIndentation")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -59,26 +57,24 @@ import com.aravinth.inventorymanager.viewmodel.StockViewModel
 fun BillScreen(navController: NavController) {
     val context = LocalContext.current
     val application = context.applicationContext as Application
-    val billViewModel: BillViewModel = viewModel(factory = object: ViewModelProvider.Factory {
-        override fun <T: ViewModel>
-                create(modelClass: Class<T>): T {
-            return BillViewModel(application) as T
-        }
-    } )
+    val billViewModel: BillViewModel = viewModel(factory = applicationViewModelFactory(application) {
+        BillViewModel(it) }
+    )
 
-    val stockViewModel: StockViewModel = viewModel(factory = object : ViewModelProvider.Factory {
-        override fun <T: ViewModel>
-                create(modelClass: Class<T>): T{
-            return StockViewModel(application) as T
-        }
-    } )
-    LaunchedEffect(Unit) { billViewModel.loadItems() }
+    val stockViewModel: StockViewModel = viewModel(factory = applicationViewModelFactory(application) {
+        StockViewModel(it) }
+    )
+
+    LaunchedEffect(Unit) { billViewModel.loadItems()
+                                  stockViewModel.loadItems()}
+
     val total = billViewModel.total
     val billItems = billViewModel.items
     var searchQuery by remember { mutableStateOf("") }
     val filteredItems = stockViewModel.items.filter { it.name.contains(searchQuery, ignoreCase = true) }
     var quantity by remember { mutableStateOf("") }
     var selectedItem by remember { mutableStateOf<StockItem?>(null) }
+
     Scaffold { innerPadding->
         Column(modifier = Modifier.padding(innerPadding).padding(16.dp)
             .fillMaxSize().verticalScroll(rememberScrollState())
@@ -128,10 +124,11 @@ fun BillScreen(navController: NavController) {
             Spacer(modifier = Modifier.height(8.dp))
 
             //Empty selection logic:
+            val parsedQty = quantity.toIntOrNull()
             val isValid = selectedItem != null &&
-                    quantity.toIntOrNull() != null &&
-                    quantity.toIntOrNull()!!> 0 &&
-                    quantity.toIntOrNull()!! <= selectedItem!!.quantity
+                    parsedQty != null &&
+                    parsedQty > 0 &&
+                    parsedQty <= (selectedItem?.quantity ?: 0)
 
             //Add button:
             Button(modifier = Modifier.fillMaxWidth().padding(4.dp),
@@ -145,6 +142,7 @@ fun BillScreen(navController: NavController) {
                     billViewModel.addItem(item)
                     selectedItem = null
                     quantity = ""
+                    billViewModel.clearError()
                 },
                 enabled = isValid
             ) {
@@ -167,7 +165,8 @@ fun BillScreen(navController: NavController) {
 
             //Generate Bill:
             Button(modifier = Modifier.fillMaxWidth().padding(8.dp),
-                onClick = {billViewModel.generateBill()}) {
+                onClick = {billViewModel.generateBill()},
+                enabled = billItems.isNotEmpty()) {
                 Text("Generate Bill")
             }
         }
