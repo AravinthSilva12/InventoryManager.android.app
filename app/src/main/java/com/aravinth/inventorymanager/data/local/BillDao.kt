@@ -17,4 +17,7 @@ interface BillDao {
 
     @Query("SELECT * FROM bills ORDER BY timestamp DESC")
     fun getAllBills(): Flow<List<Bill>>
+
+    @Query("SELECT * FROM bill_items WHERE billId = :billId" )
+    fun getBillItemsByBillId(billId: Int): Flow<List<BillItem>>
 }

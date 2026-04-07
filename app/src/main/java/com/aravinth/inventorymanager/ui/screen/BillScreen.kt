@@ -18,7 +18,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.Icons.Default
+import androidx.compose.material.icons.automirrored.filled.ReceiptLong
 import androidx.compose.material.icons.filled.History
+import androidx.compose.material.icons.filled.ReceiptLong
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -28,11 +31,11 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -40,7 +43,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.aravinth.inventorymanager.domain.model.BillItem
@@ -72,6 +74,8 @@ fun BillScreen(navController: NavController) {
     val total = billViewModel.total
     val billItems = billViewModel.items
     val errorMessage = billViewModel.errorMessage
+    val bills by billViewModel.bills.collectAsState(initial = emptyList())
+    val latestBillId = bills.firstOrNull()?.id
 
     var searchQuery by remember { mutableStateOf("") }
     val filteredItems = stockViewModel.items.filter { it.name.contains(searchQuery, ignoreCase = true) }
@@ -93,15 +97,22 @@ fun BillScreen(navController: NavController) {
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text("Billing", fontSize = 22.sp, fontWeight = FontWeight.Bold)
-
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                // Bill history
                 IconButton(onClick = { navController.navigate(Screen.BillHistory.route) }) {
-                    Icon(imageVector = Icons.Default.History, contentDescription = "Bill History")
+                    Icon(imageVector = Default.History, contentDescription = "Bill History")
+                }
+
+                // Latest bill detail
+                IconButton(
+                    onClick = {
+                        latestBillId?.let { billId ->
+                            navController.navigate(Screen.BillDetail.createRoute(billId))
+                        }
+                    },
+                    enabled = latestBillId != null
+                ) {
+                    Icon(imageVector = Default.ReceiptLong, contentDescription = "Latest Bill Detail")
                 }
             }
 

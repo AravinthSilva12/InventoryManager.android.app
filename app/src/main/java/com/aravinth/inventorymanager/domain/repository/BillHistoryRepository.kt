@@ -11,4 +11,6 @@ interface BillHistoryRepository {
 
     fun getAllBills(): Flow<List<Bill>>
 
+    fun getBillItemsByBillId(billId: Int): Flow<List<BillItem>>
+
 }

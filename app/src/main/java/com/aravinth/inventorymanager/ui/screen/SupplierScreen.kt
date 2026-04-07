@@ -89,7 +89,8 @@ fun SupplierScreen(navController: NavController){
                 phone = ""
                 address = ""
             }
-        }, modifier = Modifier.fillMaxWidth()) {
+        }, modifier = Modifier.fillMaxWidth(),
+            enabled = name.isNotEmpty() && phone.isNotEmpty() && address.isNotEmpty()) {
             Text("Add Supplier")
         }
 

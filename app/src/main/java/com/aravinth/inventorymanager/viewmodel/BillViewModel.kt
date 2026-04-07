@@ -15,6 +15,7 @@ import com.aravinth.inventorymanager.data.repository.RoomBillRepository
 import com.aravinth.inventorymanager.data.repository.RoomStockRepository
 import com.aravinth.inventorymanager.domain.model.BillItem
 import com.aravinth.inventorymanager.domain.usecase.BillUseCase
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 class BillViewModel(application: Application) : AndroidViewModel(application) {
@@ -75,5 +76,9 @@ class BillViewModel(application: Application) : AndroidViewModel(application) {
                 _errorMessage = e.message ?: "Unable to generate bill"
             }
         }
+    }
+
+    fun getBillItemsByBillId(billId: Int): Flow<List<BillItem>> {
+        return historyRepository.getBillItemsByBillId(billId)
     }
 }

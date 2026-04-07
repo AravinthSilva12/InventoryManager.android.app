@@ -20,4 +20,8 @@ class RoomBillRepository(private val billDao: BillDao) : BillHistoryRepository {
     override fun getAllBills(): Flow<List<Bill>> {
         return billDao.getAllBills()
     }
+
+    override fun getBillItemsByBillId(billId: Int): Flow<List<BillItem>> {
+        return billDao.getBillItemsByBillId(billId)
+    }
 }

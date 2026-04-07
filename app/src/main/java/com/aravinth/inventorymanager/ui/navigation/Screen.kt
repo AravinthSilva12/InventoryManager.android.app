@@ -15,6 +15,10 @@ sealed class Screen (val route : String) {
      object Billing: Screen("billing")
 
      object BillHistory: Screen("bill_history")
+
+     object BillDetail : Screen("bill_detail/{billId}") {
+          fun createRoute(billId: Int) = "bill_detail/$billId"
+     }
      object Suppliers: Screen("suppliers")
 
      object SupplierData: Screen("supplier_data")

@@ -1,4 +1,5 @@
 package com.aravinth.inventorymanager.ui.navigation
+import android.app.Application
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
@@ -7,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -14,6 +16,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.aravinth.inventorymanager.ui.screen.AddStockScreen
+import com.aravinth.inventorymanager.ui.screen.BillDetailScreen
 import com.aravinth.inventorymanager.ui.screen.BillHistoryScreen
 import com.aravinth.inventorymanager.ui.screen.BillScreen
 import com.aravinth.inventorymanager.ui.screen.CrmDataScreen
@@ -26,6 +29,7 @@ import com.aravinth.inventorymanager.ui.screen.StockScreen
 import com.aravinth.inventorymanager.ui.screen.SupplierDataScreen
 import com.aravinth.inventorymanager.ui.screen.SupplierScreen
 import com.aravinth.inventorymanager.viewmodel.BillViewModel
+import com.aravinth.inventorymanager.viewmodel.applicationViewModelFactory
 
 @Composable
 fun MainScreen(){
@@ -81,6 +85,28 @@ Scaffold(
                     }
                 )
             }
+
+            composable(
+                route = Screen.BillDetail.route,
+                arguments = listOf(navArgument("billId") { type = NavType.IntType })
+            ) { backStackEntry ->
+                val billId = backStackEntry.arguments?.getInt("billId") ?: 0
+                val billViewModel: BillViewModel = viewModel(
+                    factory = applicationViewModelFactory(LocalContext.current.applicationContext as Application) {
+                        BillViewModel(it)
+                    }
+                )
+                if (billId <= 0) {
+                    navController.popBackStack()
+                    return@composable
+                }
+                BillDetailScreen(
+                    billId = billId,
+                    viewModel = billViewModel,
+                    onBack = { navController.popBackStack() }
+                )
+            }
+
             composable(Screen.Suppliers.route) { SupplierScreen(navController) }
 
             composable(Screen.SupplierData.route) { SupplierDataScreen(navController) }

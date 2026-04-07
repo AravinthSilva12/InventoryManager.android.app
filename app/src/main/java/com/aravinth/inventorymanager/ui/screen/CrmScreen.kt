@@ -1,4 +1,5 @@
 package com.aravinth.inventorymanager.ui.screen
+import android.R.attr.enabled
 import android.app.Application
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -95,7 +96,10 @@ fun CrmScreen(navController: NavController) {
                     customerPhone = ""
                     customerAddress = ""
                 },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                enabled = customerName.isNotEmpty() &&
+                          customerPhone.isNotEmpty() &&
+                          customerAddress.isNotEmpty()
             )
             {
                 Text("Add Customer")
