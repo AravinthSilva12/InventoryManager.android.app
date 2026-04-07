@@ -27,6 +27,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -71,21 +72,13 @@ fun BillScreen(navController: NavController) {
             return StockViewModel(application) as T
         }
     } )
-
-    LaunchedEffect(Unit) { billViewModel.loadItems()
-                                  stockViewModel.loadItems()
-    }
-
+    LaunchedEffect(Unit) { billViewModel.loadItems() }
     val total = billViewModel.total
     val billItems = billViewModel.items
     var searchQuery by remember { mutableStateOf("") }
     val filteredItems = stockViewModel.items.filter { it.name.contains(searchQuery, ignoreCase = true) }
     var quantity by remember { mutableStateOf("") }
     var selectedItem by remember { mutableStateOf<StockItem?>(null) }
-    val errorMessage = billViewModel.errorMessage
-    if(!errorMessage.isNullOrBlank()) {
-        Text(text = errorMessage, color = Color.Red) }
-
     Scaffold { innerPadding->
         Column(modifier = Modifier.padding(innerPadding).padding(16.dp)
             .fillMaxSize().verticalScroll(rememberScrollState())
@@ -135,11 +128,10 @@ fun BillScreen(navController: NavController) {
             Spacer(modifier = Modifier.height(8.dp))
 
             //Empty selection logic:
-            val parsedQty = quantity.toIntOrNull()
             val isValid = selectedItem != null &&
-                    parsedQty != null &&
-                    parsedQty > 0 &&
-                    parsedQty <= (selectedItem?.quantity ?: 0)
+                    quantity.toIntOrNull() != null &&
+                    quantity.toIntOrNull()!!> 0 &&
+                    quantity.toIntOrNull()!! <= selectedItem!!.quantity
 
             //Add button:
             Button(modifier = Modifier.fillMaxWidth().padding(4.dp),
@@ -153,7 +145,6 @@ fun BillScreen(navController: NavController) {
                     billViewModel.addItem(item)
                     selectedItem = null
                     quantity = ""
-                    billViewModel.clearError()
                 },
                 enabled = isValid
             ) {
@@ -176,8 +167,7 @@ fun BillScreen(navController: NavController) {
 
             //Generate Bill:
             Button(modifier = Modifier.fillMaxWidth().padding(8.dp),
-                onClick = {billViewModel.generateBill()},
-                enabled = billItems.isNotEmpty()) {
+                onClick = {billViewModel.generateBill()}) {
                 Text("Generate Bill")
             }
         }

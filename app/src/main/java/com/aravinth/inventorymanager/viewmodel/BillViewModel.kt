@@ -1,7 +1,5 @@
 package com.aravinth.inventorymanager.viewmodel
-import android.R.attr.text
 import android.app.Application
-import androidx.compose.material3.Text
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableStateListOf
@@ -9,7 +7,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.room.withTransaction
 import com.aravinth.inventorymanager.data.local.AppDatabase
 import com.aravinth.inventorymanager.data.repository.AppContainer
 import com.aravinth.inventorymanager.data.repository.InMemoryBillRepository
@@ -72,19 +69,12 @@ class BillViewModel(application: Application) :
 
     fun generateBill() {
         viewModelScope.launch {
-            _errorMessage = null
-            try {
-                val result = db.withTransaction {
-                    useCase.generateBill().getOrThrow()
-                }
-            loadItems()
-        } catch (e: Exception) {
-            _errorMessage = e.message ?: "Unable to generate bill"
+            val result = useCase.generateBill()
+            if(result.isSuccess) {
+                clearBill()
+            } else {
+                _errorMessage = result.exceptionOrNull()?.message
+            }
         }
-      }
-   }
-
-    fun clearError() {
-        _errorMessage = null
     }
 }

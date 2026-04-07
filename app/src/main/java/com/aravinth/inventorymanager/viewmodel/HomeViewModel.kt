@@ -24,5 +24,5 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
         val totalCustomers: Flow<Int> = crmRepo.getCustomer().map { list -> list.size}
 
-        val lowStockCount: Flow<Int> = stockRepo.getAllStockItems().map { list -> list.count{it.quantity < it.reorderLevel} }
+        val lowStockCount: Flow<Int> = stockRepo.getAllStockItems().map { list -> list.count{it.quantity <= it.reorderLevel} }
 }
