@@ -44,26 +44,21 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.aravinth.inventorymanager.domain.model.StockFilter
 import com.aravinth.inventorymanager.domain.model.StockItem
 import com.aravinth.inventorymanager.ui.navigation.Screen
 import com.aravinth.inventorymanager.viewmodel.StockViewModel
+import com.aravinth.inventorymanager.viewmodel.applicationViewModelFactory
 
 
 @Composable
 fun StockScreen(navController: NavController) {
     val context = LocalContext.current
     val application = context.applicationContext as Application
-    val viewModel: StockViewModel = viewModel(factory = object: ViewModelProvider.Factory{
-        override fun <T: ViewModel>
-                create(modelClass: Class<T>): T {
-            return StockViewModel(application) as T
-        }
-    }
+    val viewModel: StockViewModel = viewModel(
+        factory = applicationViewModelFactory(application) { StockViewModel(it) }
     )
     LaunchedEffect(Unit) { viewModel.loadItems() }
     var itemToDelete by remember { mutableStateOf<StockItem?>(null) }
