@@ -1,6 +1,5 @@
 package com.aravinth.inventorymanager.ui.screen
 
-import android.annotation.SuppressLint
 import android.app.Application
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -27,7 +26,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -43,8 +41,6 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.aravinth.inventorymanager.domain.model.BillItem
@@ -52,125 +48,149 @@ import com.aravinth.inventorymanager.domain.model.StockItem
 import com.aravinth.inventorymanager.ui.navigation.Screen
 import com.aravinth.inventorymanager.viewmodel.BillViewModel
 import com.aravinth.inventorymanager.viewmodel.StockViewModel
+import com.aravinth.inventorymanager.viewmodel.applicationViewModelFactory
 
-@SuppressLint("SuspiciousIndentation")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BillScreen(navController: NavController) {
     val context = LocalContext.current
     val application = context.applicationContext as Application
-    val billViewModel: BillViewModel = viewModel(factory = object: ViewModelProvider.Factory {
-        override fun <T: ViewModel>
-                create(modelClass: Class<T>): T {
-            return BillViewModel(application) as T
-        }
-    } )
 
-    val stockViewModel: StockViewModel = viewModel(factory = object : ViewModelProvider.Factory {
-        override fun <T: ViewModel>
-                create(modelClass: Class<T>): T{
-            return StockViewModel(application) as T
-        }
-    } )
-    LaunchedEffect(Unit) { billViewModel.loadItems() }
+    val billViewModel: BillViewModel = viewModel(
+        factory = applicationViewModelFactory(application) { BillViewModel(it) }
+    )
+
+    val stockViewModel: StockViewModel = viewModel(
+        factory = applicationViewModelFactory(application) { StockViewModel(it) }
+    )
+
+    LaunchedEffect(Unit) {
+        billViewModel.loadItems()
+        stockViewModel.loadItems()
+    }
+
     val total = billViewModel.total
     val billItems = billViewModel.items
+    val errorMessage = billViewModel.errorMessage
+
     var searchQuery by remember { mutableStateOf("") }
     val filteredItems = stockViewModel.items.filter { it.name.contains(searchQuery, ignoreCase = true) }
+
     var quantity by remember { mutableStateOf("") }
     var selectedItem by remember { mutableStateOf<StockItem?>(null) }
-    Scaffold { innerPadding->
-        Column(modifier = Modifier.padding(innerPadding).padding(16.dp)
-            .fillMaxSize().verticalScroll(rememberScrollState())
-        )
-        {   //Bill history button at top:
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically)
-             {
-               Text("Billing", fontSize = 22.sp, fontWeight = FontWeight.Bold)
 
-               IconButton(onClick = { navController.navigate(Screen.BillHistory.route) })
-                        {Icon(imageVector = Icons.Default.History, contentDescription = "Bill History") }
-             }
+    val parsedQty = quantity.toIntOrNull()
+    val isValid = selectedItem != null && parsedQty != null && parsedQty > 0 && parsedQty <= (selectedItem?.quantity ?: 0)
 
-            //Search Field:
-            OutlinedTextField(value = searchQuery, onValueChange = {searchQuery = it}, label = {Text("Search item")},
-                modifier = Modifier.fillMaxWidth())
+    Scaffold { innerPadding ->
+        Column(
+            modifier = Modifier
+                .padding(innerPadding)
+                .padding(16.dp)
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text("Billing", fontSize = 22.sp, fontWeight = FontWeight.Bold)
 
-            if(searchQuery.isNotEmpty() && filteredItems.isNotEmpty()) {
-            LazyColumn(modifier = Modifier.fillMaxWidth().heightIn(max = 150.dp)) {
-                items(filteredItems) {item ->
-                    Text(text = item.name, modifier = Modifier.fillMaxWidth().background(
-                        if(selectedItem == item) Color(0xFFE0E0E0)
-                        else Color.Transparent
-                    )
-                        .clickable{selectedItem = item
-                              searchQuery = ""}
-                        .padding(8.dp)
-                    )
+                IconButton(onClick = { navController.navigate(Screen.BillHistory.route) }) {
+                    Icon(imageVector = Icons.Default.History, contentDescription = "Bill History")
                 }
             }
-         }
-            Spacer(modifier = Modifier.height(8.dp))
-            //Selected item:
-            if(selectedItem != null) {
-                Text("Selected: ${selectedItem!!.name}")
+
+            OutlinedTextField(
+                value = searchQuery,
+                onValueChange = { searchQuery = it },
+                label = { Text("Search item") },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            if (searchQuery.isNotEmpty() && filteredItems.isNotEmpty()) {
+                LazyColumn(modifier = Modifier.fillMaxWidth().heightIn(max = 150.dp)) {
+                    items(filteredItems) { item ->
+                        Text(
+                            text = item.name,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .background(if (selectedItem == item) Color(0xFFE0E0E0) else Color.Transparent)
+                                .clickable {
+                                    selectedItem = item
+                                    searchQuery = ""
+                                }
+                                .padding(8.dp)
+                        )
+                    }
+                }
             }
 
             Spacer(modifier = Modifier.height(8.dp))
-
-            //Quantity Input:
-            OutlinedTextField(value = quantity, onValueChange = {quantity = it},
-                label = {Text("Quantity")},
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Done),
-                modifier = Modifier.fillMaxWidth()
-            )
+            selectedItem?.let { Text("Selected: ${it.name}") }
             Spacer(modifier = Modifier.height(8.dp))
 
-            //Empty selection logic:
-            val isValid = selectedItem != null &&
-                    quantity.toIntOrNull() != null &&
-                    quantity.toIntOrNull()!!> 0 &&
-                    quantity.toIntOrNull()!! <= selectedItem!!.quantity
+            OutlinedTextField(
+                value = quantity,
+                onValueChange = { quantity = it },
+                label = { Text("Quantity") },
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Number,
+                    imeAction = ImeAction.Done
+                ),
+                modifier = Modifier.fillMaxWidth()
+            )
 
-            //Add button:
-            Button(modifier = Modifier.fillMaxWidth().padding(4.dp),
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Button(
+                modifier = Modifier.fillMaxWidth().padding(4.dp),
                 onClick = {
-                val selected = selectedItem ?: return@Button
-                val qty = quantity.toIntOrNull() ?:return@Button
-
-                val item = BillItem(stockItemId = selected.id, name = selected.name,
-                    sellingPrice = selected.sellingPrice, quantity = qty)
+                    val selected = selectedItem ?: return@Button
+                    val qty = quantity.toIntOrNull() ?: return@Button
+                    val item = BillItem(
+                        stockItemId = selected.id,
+                        name = selected.name,
+                        sellingPrice = selected.sellingPrice,
+                        quantity = qty
+                    )
 
                     billViewModel.addItem(item)
                     selectedItem = null
                     quantity = ""
+                    billViewModel.clearError()
                 },
                 enabled = isValid
             ) {
                 Text("Add item")
             }
+
             Spacer(modifier = Modifier.height(8.dp))
 
-            //Bill Items List:
-            LazyColumn(modifier = Modifier.fillMaxWidth().heightIn(min = 100.dp, max = 250.dp))
-            {
-                items(billItems) {item->
+            LazyColumn(modifier = Modifier.fillMaxWidth().heightIn(min = 100.dp, max = 250.dp)) {
+                items(billItems) { item ->
                     Text("${item.name}: ${item.quantity} x ₹${item.sellingPrice}")
                 }
             }
-            Spacer(modifier = Modifier.height(4.dp))
 
-            //Total:
+            Spacer(modifier = Modifier.height(4.dp))
             Text("Total: ₹$total", fontWeight = FontWeight.Bold)
+
+            if (!errorMessage.isNullOrBlank()) {
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(text = errorMessage, color = Color.Red)
+            }
+
             Spacer(modifier = Modifier.height(8.dp))
 
-            //Generate Bill:
-            Button(modifier = Modifier.fillMaxWidth().padding(8.dp),
-                onClick = {billViewModel.generateBill()}) {
+            Button(
+                modifier = Modifier.fillMaxWidth().padding(8.dp),
+                onClick = { billViewModel.generateBill() },
+                enabled = billItems.isNotEmpty()
+            ) {
                 Text("Generate Bill")
             }
         }
     }
-
 }
