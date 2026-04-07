@@ -38,8 +38,12 @@ abstract class AppDatabase: RoomDatabase() {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(context.applicationContext,
                     AppDatabase::class.java, "inventory_db")
-                    .fallbackToDestructiveMigration(true)
-                .build()
+                    .addMigrations(
+                        MIGRATION_1_2,
+                        MIGRATION_2_3,
+                        MIGRATION_3_4
+                    )
+                    .build()
 
                 INSTANCE = instance
                 instance
