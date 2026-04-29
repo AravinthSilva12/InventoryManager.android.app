@@ -1,3 +1,4 @@
+
 package com.aravinth.inventorymanager.ui.navigation
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
