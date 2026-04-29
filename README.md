@@ -45,5 +45,38 @@ Future improvements :
 *Setting up barcode scanner, qr scanner to the billing module,
 *Overall improving user experience and user interface.
 
-Screen shots of the app :
 
+## Screenshots
+
+### Dashboard
+![Dashboard](screenshots/dashboard.png)
+
+### Stock Screen
+![Stock Screen](screenshots/stockScreen.png)
+
+### Stock Details
+![Stock Details](screenshots/stockDetail.png)
+
+### Stock Data
+![Stock Data](screenshots/stockData.png)
+
+### Add Stock
+![Add Stock](screenshots/addStock.png)
+
+### Add Supplier
+![Add Supplier](screenshots/addSupplier.png)
+
+### Billing - Generate Bill
+![Generate Bill](screenshots/generateBill.png)
+
+### Billing - Generate Bill (Step 2)
+![Generate Bill 2](screenshots/generateBill2.png)
+
+### Bill Details
+![Bill Details](screenshots/billDetails.png)
+
+### Bill History
+![Bill History](screenshots/billHistory.png)
+
+### CRM
+![CRM](screenshots/crm.png)
